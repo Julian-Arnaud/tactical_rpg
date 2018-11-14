@@ -1,5 +1,7 @@
-class character {
-    constructor(n, m, lm, w, a, p) {
+export {Character, Weapon, Armor, Power, Position} from "./character";
+
+class Character {
+    constructor(n, m, lm, w, a, p, po) {
         this.cName = n;
         this.cMove = m;
         this.cLifeMax = lm;
@@ -8,15 +10,8 @@ class character {
         this.cArmor = a;
         this.cPowers = p;
         this.cStatus = true;
+        this.cPosition = po;
     }
-    cName;
-    cMove;
-    cLifeMax;
-    cLife;
-    cWeapon;
-    cArmor;
-    cPowers;
-    cStatus;
 
     hit(foe) {
         if(foe.cLife - this.cWeapon.wPower < 0) {
@@ -26,31 +21,44 @@ class character {
             foe.cLife -= this.cWeapon.wPower;
         }
     }
+
+    getPosition() {
+        return this.cPosition;
+    }
+
+    getWeapon() {
+        return this.cWeapon;
+    }
+
+    getArmor() {
+        return this.cArmor;
+    }
+
+    getPowers() {
+        return this.cPowers;
+    }
 }
 
-class weapon {
+class Weapon {
+
     constructor(n, p, r, t) {
         this.wName = n;
         this.wPower = p;
         this.wRange = r;
         this.wType = t;
     }
-    wName;
-    wPower; // base value of weapon
-    wRange; // range of the weapon (eg: 2 in line for a spear or 6 as a cone for a bow etc...)
-    wType;  // kind of the weapon (eg: sword, spear, bow etc...)
 }
 
-class armor {
+class Armor {
+
     constructor(n, d) {
         this.aName = n;
         this.aDef = d;
     }
-    aName;
-    aDef;  // base value of the armor
 }
 
-class power {
+class Power {
+
     constructor(n, ty, d, e, ta) {
         this.pName = n;
         this.pType = ty;
@@ -58,9 +66,20 @@ class power {
         this.pElement = e;
         this.pTarget = ta;
     }
-    pName;
-    pType; // HEAL DAMAGE
-    pDmg; // value of the effect
-    pElement; // LIGHT DARK FIRE WATER THUNDER GROUND
-    pTarget; // FOE HERO ANY
+}
+
+class Position {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    getX() {
+        return this.x;
+    }
+
+    getY() {
+        return this.y;
+    }
 }

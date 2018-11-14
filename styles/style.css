@@ -1,6 +1,9 @@
-canvas{
-    border: 1px solid;
-}
 #charInfo{
     background-color: aqua;
+    border: 1px solid black;
+}
+
+#map {
+    background-image: url("../assets/bg.jpg");
+    border: 1px solid black;
 }
