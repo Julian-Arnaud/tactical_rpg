@@ -7,3 +7,7 @@
     background-image: url("../assets/map.png");
     border: 1px solid black;
 }
+
+body{
+    background-color: ghostwhite;
+}

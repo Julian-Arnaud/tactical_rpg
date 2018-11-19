@@ -16,7 +16,7 @@ const map = [
     [1, 2, 2, 1, 1, 0, 1, 2, 1, 1]
 ];
 
-const charPos = [
+let charPos = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0,-1,-1, 0],
     [0, 0, 0, 0, 0, 0,-1,-1, 0, 0],
@@ -45,7 +45,8 @@ window.onload = function () {
     iUp.src = "../assets/up.png";
     iDown.src = "../assets/down.png";
 
-    let char = new Character("Test", 4);
+    let classWarrior = new Classe("Warrior", 14, 12, 4, 7, new Weapon("Sword", 10), new Armor("Buckle", 6));
+    let char = new Character("Adol", classWarrior);
     _activeChar = new ActiveChar(char);
 
     drawActiveInfo(_activeChar);
@@ -54,8 +55,21 @@ window.onload = function () {
 
 function drawActiveInfo(aChar) {
     infosCtx.save();
-    infosCtx.fillText(aChar.getActive().getName(), 0, 10);
-    infosCtx.fillText(aChar.getActive().getMoves(), 0, 20);
+    infosCtx.fillStyle = "white";
+    infosCtx.font = "36px";
+    // char name & class
+    infosCtx.fillText(aChar.getActive().getName(), 55, 33);
+    infosCtx.fillText(aChar.getActive().getClasse().getClassName(), 55, 65);
+    // char caracs
+    infosCtx.fillText(aChar.getActive().getClasse().getStrength(), 55, 133);
+    infosCtx.fillText(aChar.getActive().getClasse().getConstitution(), 55, 170);
+    infosCtx.fillText(aChar.getActive().getClasse().getMoves(), 159, 133);
+    infosCtx.fillText(aChar.getActive().getClasse().getLuck(), 159, 170);
+    // char stuff
+    infosCtx.fillText(aChar.getActive().getClasse().getWeapon().getWName(), 55, 240);
+    infosCtx.fillText(aChar.getActive().getClasse().getWeapon().getWValue(), 159, 240);
+    infosCtx.fillText(aChar.getActive().getClasse().getArmor().getAName(), 55, 277);
+    infosCtx.fillText(aChar.getActive().getClasse().getArmor().getAValue(), 159, 277);
     infosCtx.restore();
 }
 
@@ -79,7 +93,6 @@ function drawActiveChar() {
     if(_activeChar.getActive().orientation === "DOWN") {
         mapCtx.drawImage(iDown, _activeChar.getActive().getX(), _activeChar.getActive().getY());
     }
-    //mapCtx.strokeRect(_activeChar.getActive().getX(), _activeChar.getActive().getY(), step, step);
     mapCtx.restore();
     window.requestAnimationFrame(drawActiveChar);
 }
@@ -129,20 +142,20 @@ class ActiveChar {
 }
 
 class Character {
-    constructor(name, moves) {
+    constructor(name, c) {
         this.name = name;
-        this.moves = moves;
+        this.classe = c;
         this.rX = this.rY = 0;
         this.x = this.y = 0;
         this.orientation = "DOWN";
     }
 
-    getName() {
-        return this.name;
+    getClasse() {
+        return this.classe;
     }
 
-    getMoves() {
-        return this.moves;
+    getName() {
+        return this.name;
     }
 
     getX() {
@@ -199,5 +212,75 @@ class Character {
         } else {
             this.y = 720;
         }
+    }
+}
+
+class Classe {
+    constructor(name, str, con, mov, lck, weap, armor) {
+        this.className = name;
+        this.strength = str;
+        this.constitution = con;
+        this.moves = mov;
+        this.luck = lck;
+        this.weapon = weap;
+        this.armor = armor;
+    }
+
+    getClassName() {
+        return this.className;
+    }
+
+    getStrength() {
+        return this.strength;
+    }
+
+    getConstitution() {
+        return this.constitution;
+    }
+
+    getMoves() {
+        return this.moves;
+    }
+
+    getLuck() {
+        return this.luck;
+    }
+
+    getWeapon() {
+        return this.weapon;
+    }
+
+    getArmor() {
+        return this.armor;
+    }
+}
+
+class Weapon {
+    constructor(n, val) {
+        this.wName = n;
+        this.wValue = val;
+    }
+
+    getWName() {
+        return this.wName;
+    }
+
+    getWValue() {
+        return this.wValue;
+    }
+}
+
+class Armor {
+    constructor(n, val) {
+        this.aName = n;
+        this.aValue = val;
+    }
+
+    getAName() {
+        return this.aName;
+    }
+
+    getAValue() {
+        return this.aValue;
     }
 }
