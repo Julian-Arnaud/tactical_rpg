@@ -1,8 +1,13 @@
+//---- timer part to slow down animation ----
+let fpsInterval, startTime, now, then, elapsed;
+//-------------------------------------------
+
 let mapCanva, mapCtx;
 let infosCanva, infosCtx;
 const step = 80;
 let _activeChar;
 let iLeft, iRight, iUp, iDown;
+
 const map = [
     [1, 1, 1, 1, 1, 2, 2, 1, 1, 1],
     [2, 2, 2, 1, 1, 1, 1, 0, 0, 1],
@@ -50,7 +55,11 @@ window.onload = function () {
     _activeChar = new ActiveChar(char);
 
     drawActiveInfo(_activeChar);
-    window.requestAnimationFrame(drawActiveChar);
+    fpsInterval = 1000 / 15;
+    then = Date.now();
+    startTime = then;
+    drawActiveChar();
+    //window.requestAnimationFrame(drawActiveChar);
 };
 
 function drawActiveInfo(aChar) {
@@ -70,31 +79,40 @@ function drawActiveInfo(aChar) {
     infosCtx.fillText(aChar.getActive().getClasse().getWeapon().getWValue(), 159, 240);
     infosCtx.fillText(aChar.getActive().getClasse().getArmor().getAName(), 55, 277);
     infosCtx.fillText(aChar.getActive().getClasse().getArmor().getAValue(), 159, 277);
+
     infosCtx.restore();
 }
 
 function drawActiveChar() {
-    mapCtx.save();
-    mapCtx.clearRect(0, 0, 800, 800);
-    if(_activeChar.kLeft === true) _activeChar.getActive().cLeft();
-    if(_activeChar.kRight === true) _activeChar.getActive().cRight();
-    if(_activeChar.kUp === true) _activeChar.getActive().cUp();
-    if(_activeChar.kDown === true) _activeChar.getActive().cDown();
-
-    if(_activeChar.getActive().orientation === "LEFT") {
-        mapCtx.drawImage(iLeft, _activeChar.getActive().getX(), _activeChar.getActive().getY());
-    }
-    if(_activeChar.getActive().orientation === "RIGHT") {
-        mapCtx.drawImage(iRight, _activeChar.getActive().getX(), _activeChar.getActive().getY());
-    }
-    if(_activeChar.getActive().orientation === "UP") {
-        mapCtx.drawImage(iUp, _activeChar.getActive().getX(), _activeChar.getActive().getY());
-    }
-    if(_activeChar.getActive().orientation === "DOWN") {
-        mapCtx.drawImage(iDown, _activeChar.getActive().getX(), _activeChar.getActive().getY());
-    }
-    mapCtx.restore();
     window.requestAnimationFrame(drawActiveChar);
+    now = Date.now();
+    elapsed = now - then;
+
+    if (elapsed > fpsInterval) {
+        then = now - (elapsed % fpsInterval);
+
+        mapCtx.save();
+        mapCtx.clearRect(0, 0, 800, 800);
+        if(_activeChar.kLeft === true) _activeChar.getActive().cLeft();
+        if(_activeChar.kRight === true) _activeChar.getActive().cRight();
+        if(_activeChar.kUp === true) _activeChar.getActive().cUp();
+        if(_activeChar.kDown === true) _activeChar.getActive().cDown();
+
+        if(_activeChar.getActive().orientation === "LEFT") {
+            mapCtx.drawImage(iLeft, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        }
+        if(_activeChar.getActive().orientation === "RIGHT") {
+            mapCtx.drawImage(iRight, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        }
+        if(_activeChar.getActive().orientation === "UP") {
+            mapCtx.drawImage(iUp, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        }
+        if(_activeChar.getActive().orientation === "DOWN") {
+            mapCtx.drawImage(iDown, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        }
+        mapCtx.restore();
+
+    }
 }
 
 document.onkeydown = function (event) {
@@ -220,6 +238,7 @@ class Classe {
         this.className = name;
         this.strength = str;
         this.constitution = con;
+        //this.movesMax = mov;
         this.moves = mov;
         this.luck = lck;
         this.weapon = weap;
