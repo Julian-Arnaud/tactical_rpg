@@ -5,6 +5,7 @@ let fpsInterval, startTime, now, then, elapsed;
 let mapCanva, mapCtx;
 let infosCanva, infosCtx;
 const step = 80;
+let crosshair;
 let _activeChar;
 let iLeft, iRight, iUp, iDown;
 
@@ -50,9 +51,11 @@ window.onload = function () {
     iUp.src = "../assets/up.png";
     iDown.src = "../assets/down.png";
 
+    crosshair = new CrossHair(0, 0, 4);
+
     let classWarrior = new Classe("Warrior", 14, 12, 4, 7, new Weapon("Sword", 10), new Armor("Buckle", 6));
-    let char = new Character("Adol", classWarrior);
-    _activeChar = new ActiveChar(char);
+    let hero = new Character("Adol", classWarrior);
+    _activeChar = hero;
 
     drawActiveInfo(_activeChar);
     fpsInterval = 1000 / 15;
@@ -67,18 +70,18 @@ function drawActiveInfo(aChar) {
     infosCtx.fillStyle = "white";
     infosCtx.font = "36px";
     // char name & class
-    infosCtx.fillText(aChar.getActive().getName(), 55, 33);
-    infosCtx.fillText(aChar.getActive().getClasse().getClassName(), 55, 65);
+    infosCtx.fillText(aChar.getName(), 55, 33);
+    infosCtx.fillText(aChar.getClasse().getClassName(), 55, 65);
     // char caracs
-    infosCtx.fillText(aChar.getActive().getClasse().getStrength(), 55, 133);
-    infosCtx.fillText(aChar.getActive().getClasse().getConstitution(), 55, 170);
-    infosCtx.fillText(aChar.getActive().getClasse().getMoves(), 159, 133);
-    infosCtx.fillText(aChar.getActive().getClasse().getLuck(), 159, 170);
+    infosCtx.fillText(aChar.getClasse().getStrength(), 55, 133);
+    infosCtx.fillText(aChar.getClasse().getConstitution(), 55, 170);
+    infosCtx.fillText(aChar.getClasse().getMoves(), 159, 133);
+    infosCtx.fillText(aChar.getClasse().getLuck(), 159, 170);
     // char stuff
-    infosCtx.fillText(aChar.getActive().getClasse().getWeapon().getWName(), 55, 240);
-    infosCtx.fillText(aChar.getActive().getClasse().getWeapon().getWValue(), 159, 240);
-    infosCtx.fillText(aChar.getActive().getClasse().getArmor().getAName(), 55, 277);
-    infosCtx.fillText(aChar.getActive().getClasse().getArmor().getAValue(), 159, 277);
+    infosCtx.fillText(aChar.getClasse().getWeapon().getWName(), 55, 240);
+    infosCtx.fillText(aChar.getClasse().getWeapon().getWValue(), 159, 240);
+    infosCtx.fillText(aChar.getClasse().getArmor().getAName(), 55, 277);
+    infosCtx.fillText(aChar.getClasse().getArmor().getAValue(), 159, 277);
 
     infosCtx.restore();
 }
@@ -93,23 +96,36 @@ function drawActiveChar() {
 
         mapCtx.save();
         mapCtx.clearRect(0, 0, 800, 800);
-        if(_activeChar.kLeft === true) _activeChar.getActive().cLeft();
-        if(_activeChar.kRight === true) _activeChar.getActive().cRight();
-        if(_activeChar.kUp === true) _activeChar.getActive().cUp();
-        if(_activeChar.kDown === true) _activeChar.getActive().cDown();
+        if(crosshair.kLeft === true) {
+            crosshair._left();
+            //_activeChar.cLeft();
+        }
+        if(crosshair.kRight === true) {
+            crosshair._right();
+            //_activeChar.cRight();
+        }
+        if(crosshair.kUp === true) {
+            crosshair._up();
+            //_activeChar.cUp();
+        }
+        if(crosshair.kDown === true) {
+            crosshair._down();
+            //_activeChar.cDown();
+        }
 
-        if(_activeChar.getActive().orientation === "LEFT") {
-            mapCtx.drawImage(iLeft, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        if(_activeChar.orientation === "LEFT") {
+            mapCtx.drawImage(iLeft, _activeChar.getX()*80, _activeChar.getY()*80);
         }
-        if(_activeChar.getActive().orientation === "RIGHT") {
-            mapCtx.drawImage(iRight, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        if(_activeChar.orientation === "RIGHT") {
+            mapCtx.drawImage(iRight, _activeChar.getX()*80, _activeChar.getY()*80);
         }
-        if(_activeChar.getActive().orientation === "UP") {
-            mapCtx.drawImage(iUp, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        if(_activeChar.orientation === "UP") {
+            mapCtx.drawImage(iUp, _activeChar.getX()*80, _activeChar.getY()*80);
         }
-        if(_activeChar.getActive().orientation === "DOWN") {
-            mapCtx.drawImage(iDown, _activeChar.getActive().getX(), _activeChar.getActive().getY());
+        if(_activeChar.orientation === "DOWN") {
+            mapCtx.drawImage(iDown, _activeChar.getX()*80, _activeChar.getY()*80);
         }
+        mapCtx.strokeRect(crosshair.x * 80, crosshair.y *80, step, step);
         mapCtx.restore();
 
     }
@@ -117,55 +133,45 @@ function drawActiveChar() {
 
 document.onkeydown = function (event) {
     if(event.key === "ArrowUp") {
-        _activeChar.kUp = true;
+        crosshair.kUp = true;
     }
     if(event.key === "ArrowDown") {
-        _activeChar.kDown = true;
+        crosshair.kDown = true;
     }
     if(event.key === "ArrowLeft") {
-        _activeChar.kLeft = true;
+        crosshair.kLeft = true;
     }
     if(event.key === "ArrowRight") {
-        _activeChar.kRight = true;
+        crosshair.kRight = true;
+    }
+
+    if(event.key === "KeyA") {
+        crosshair.moveActive(_activeChar);
     }
 };
 
 document.onkeyup = function (event) {
     if(event.key === "ArrowUp") {
-        _activeChar.kUp = false;
+        crosshair.kUp = false;
     }
     if(event.key === "ArrowDown") {
-        _activeChar.kDown = false;
+        crosshair.kDown = false;
     }
     if(event.key === "ArrowLeft") {
-        _activeChar.kLeft = false;
+        crosshair.kLeft = false;
     }
     if(event.key === "ArrowRight") {
-        _activeChar.kRight = false;
+        crosshair.kRight = false;
     }
 };
-
-class ActiveChar {
-    constructor(char) {
-        this.active = char;
-        this.kUp = false;
-        this.kDown = false;
-        this.kLeft = false;
-        this.kRight = false;
-    }
-
-    getActive() {
-        return this.active;
-    }
-}
 
 class Character {
     constructor(name, c) {
         this.name = name;
         this.classe = c;
-        this.rX = this.rY = 0;
         this.x = this.y = 0;
         this.orientation = "DOWN";
+        this.played = false;
     }
 
     getClasse() {
@@ -184,11 +190,22 @@ class Character {
         return this.y;
     }
 
+    setX(nX) {
+        this.x = nX;
+    }
+
+    setY(nY) {
+        this.y = nY;
+    }
+
+    playOrReset() {
+        this.played = !this.played;
+    }
+
     cLeft() {
         if(this.x > 0) {
-            if(charPos[this.rY][this.rX-1] !== -1) {
-                this.x -= step;
-                this.rX -= 1;
+            if(charPos[this.y][this.x-1] !== -1) {
+                this.x--;
                 this.orientation = "LEFT";
             }
         } else {
@@ -197,22 +214,20 @@ class Character {
     }
 
     cRight() {
-        if(this.x < 720) {
-            if(charPos[this.rY][this.rX+1] !== -1) {
-                this.x += step;
-                this.rX += 1;
+        if(this.x < 9) {
+            if(charPos[this.y][this.x+1] !== -1) {
+                this.x++;
                 this.orientation = "RIGHT";
             }
         } else {
-            this.x = 720;
+            this.x = 9;
         }
     }
 
     cUp() {
         if(this.y > 0) {
-            if(charPos[this.rY-1][this.rX] !== -1) {
-                this.y -= step;
-                this.rY -= 1;
+            if(charPos[this.y-1][this.x] !== -1) {
+                this.y--;
                 this.orientation = "UP";
             }
         } else {
@@ -221,14 +236,13 @@ class Character {
     }
 
     cDown() {
-        if(this.y < 720) {
-            if(charPos[this.rY+1][this.rX] !== -1) {
-                this.y += step;
-                this.rY += 1;
+        if(this.y < 9) {
+            if(charPos[this.y+1][this.x] !== -1) {
+                this.y++;
                 this.orientation = "DOWN";
             }
         } else {
-            this.y = 720;
+            this.y = 9;
         }
     }
 }
@@ -301,5 +315,79 @@ class Armor {
 
     getAValue() {
         return this.aValue;
+    }
+}
+
+class CrossHair {
+    constructor(aCharX, aCharY, moves) {
+        this.x = aCharX;
+        this.y = aCharY;
+        this.rangeMax = this.range = moves;
+        this.kUp = false;
+        this.kDown = false;
+        this.kLeft = false;
+        this.kRight = false;
+    }
+
+    _right() {
+        if(this.range > 0) {
+            if (this.x < 9) {
+                this.x++;
+                this.range--;
+            }
+            else {
+                this.x = 9;
+            }
+        }
+    }
+
+    _left() {
+        if(this.range > 0) {
+            if (this.x > 0) {
+                this.x--;
+                this.range--;
+            }
+            else {
+                this.x = 0;
+            }
+        }
+    }
+    _up() {
+        if(this.range > 0) {
+            if (this.y > 0) {
+                this.y--;
+                this.range--;
+            }
+            else {
+                this.y = 0;
+            }
+        }
+    }
+
+    _down() {
+        if(this.range > 0) {
+            if (this.y < 9) {
+                this.y++;
+                this.range--;
+            }
+            else {
+                this.y = 9;
+            }
+        }
+    }
+
+    update(xx, yy, moves) {
+        this.x = xx;
+        this.y = yy;
+        this.rangeMax = this.range = moves;
+    }
+
+    moveActive(char) {
+        if(charPos[this.y][this.x] === 0) {
+            charPos[char.getY()][char.getX()] = 0;
+            charPos[this.y][this.x] = -2;
+            char.setX(this.x);
+            char.setY(this.y);
+        }
     }
 }
