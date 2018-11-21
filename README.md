@@ -11,6 +11,6 @@ des personnages joueurs contrôlables et si possible une IA basique régissant l
 ajouter un autre combat pour vérifier que les diverses parties du code ne dépendent pas d'une carte spécifique
 
 
-# Code pris ailleurs
+## Code pris ailleurs
 
 - https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe Pour ralentir la vitesse d'animation

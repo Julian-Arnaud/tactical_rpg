@@ -113,6 +113,13 @@ function drawActiveChar() {
             //_activeChar.cDown();
         }
 
+        if(crosshair.kMove === true) {
+            crosshair.moveActive(_activeChar);
+        }
+        if(crosshair.kReset === true) {
+            crosshair.resetPos();
+        }
+
         if(_activeChar.orientation === "LEFT") {
             mapCtx.drawImage(iLeft, _activeChar.getX()*80, _activeChar.getY()*80);
         }
@@ -132,6 +139,7 @@ function drawActiveChar() {
 }
 
 document.onkeydown = function (event) {
+    console.log(event);
     if(event.key === "ArrowUp") {
         crosshair.kUp = true;
     }
@@ -144,9 +152,11 @@ document.onkeydown = function (event) {
     if(event.key === "ArrowRight") {
         crosshair.kRight = true;
     }
-
-    if(event.key === "KeyA") {
-        crosshair.moveActive(_activeChar);
+    if(event.key === "q") {
+        crosshair.kMove = true;
+    }
+    if(event.key === "d") {
+        crosshair.kReset = true;
     }
 };
 
@@ -162,6 +172,12 @@ document.onkeyup = function (event) {
     }
     if(event.key === "ArrowRight") {
         crosshair.kRight = false;
+    }
+    if(event.key === "q") {
+        crosshair.kMove = false;
+    }
+    if(event.key === "d") {
+        crosshair.kReset = false;
     }
 };
 
@@ -327,6 +343,8 @@ class CrossHair {
         this.kDown = false;
         this.kLeft = false;
         this.kRight = false;
+        this.kMove = false;
+        this.kReset = false;
     }
 
     _right() {
@@ -383,11 +401,16 @@ class CrossHair {
     }
 
     moveActive(char) {
-        if(charPos[this.y][this.x] === 0) {
+        if(charPos[this.y][this.x] === 0 && !char.played) {
             charPos[char.getY()][char.getX()] = 0;
             charPos[this.y][this.x] = -2;
             char.setX(this.x);
             char.setY(this.y);
+            char.playOrReset();
         }
+    }
+
+    resetPos() {
+        this.range = this.rangeMax;
     }
 }
