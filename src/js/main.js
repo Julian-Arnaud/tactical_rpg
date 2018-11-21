@@ -420,9 +420,17 @@ class CrossHair {
     }
 
     update(xx, yy, moves) {
+        this.initX = xx;
+        this.initY = yy;
         this.x = xx;
         this.y = yy;
         this.rangeMax = this.range = moves;
+        this.kUp = false;
+        this.kDown = false;
+        this.kLeft = false;
+        this.kRight = false;
+        this.kMove = false;
+        this.kReset = false;
         this.kDone = false;
     }
 
@@ -435,7 +443,8 @@ class CrossHair {
             char.playOrReset();
             this.range = 0;
             this.kDone = true;
-            _activeChar = clerk;
+            _activeChar = hero;
+            this.update(hero.getX(), hero.getY(), hero.getClasse().getMoves());
         }
     }
 
