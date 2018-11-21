@@ -9,6 +9,7 @@ let crosshair;
 let hero, clerk;
 let chars;
 let _activeChar;
+let token;
 let iLeft, iRight, iUp, iDown;
 let ivLeft, ivRight, ivUp, ivDown;
 
@@ -65,9 +66,11 @@ window.onload = function () {
     let classWarrior = new Classe("Warrior", 14, 12, 4, 7, new Weapon("Sword", 10), new Armor("Buckle", 6));
     hero = new Character("Adol", classWarrior, [iLeft, iRight, iUp, iDown], 0, 0);
 
+    token = 0;
+
     chars = [hero, clerk];
 
-    _activeChar = clerk;
+    _activeChar = chars[token];
 
     crosshair = new CrossHair(_activeChar.getX(), _activeChar.getY(), _activeChar.getClasse().getMoves());
 
@@ -76,11 +79,11 @@ window.onload = function () {
     then = Date.now();
     startTime = then;
     drawActiveChar();
-    //window.requestAnimationFrame(drawActiveChar);
 };
 
 function drawActiveInfo(aChar) {
     infosCtx.save();
+    infosCtx.clearRect(0, 0, 250, 800);
     infosCtx.fillStyle = "white";
     infosCtx.font = "36px";
     // char name & class
@@ -137,18 +140,6 @@ function drawActiveChar() {
         mapCtx.drawImage(hero.getImgs()[0], hero.getX()*80, hero.getY()*80);
         mapCtx.drawImage(clerk.getImgs()[0], clerk.getX()*80, clerk.getY()*80);
 
-        /*if(_activeChar.orientation === "LEFT") {
-            mapCtx.drawImage(_activeChar.getImgs()[0], _activeChar.getX()*80, _activeChar.getY()*80);
-        }
-        if(_activeChar.orientation === "RIGHT") {
-            mapCtx.drawImage(_activeChar.getImgs()[1], _activeChar.getX()*80, _activeChar.getY()*80);
-        }
-        if(_activeChar.orientation === "UP") {
-            mapCtx.drawImage(_activeChar.getImgs()[2], _activeChar.getX()*80, _activeChar.getY()*80);
-        }
-        if(_activeChar.orientation === "DOWN") {
-            mapCtx.drawImage(_activeChar.getImgs()[3], _activeChar.getX()*80, _activeChar.getY()*80);
-        }*/
         mapCtx.strokeRect(crosshair.x * 80, crosshair.y *80, step, step);
         mapCtx.restore();
 
@@ -440,11 +431,20 @@ class CrossHair {
             charPos[this.y][this.x] = -2;
             char.setX(this.x);
             char.setY(this.y);
-            char.playOrReset();
+            //char.playOrReset();
             this.range = 0;
             this.kDone = true;
-            _activeChar = hero;
-            this.update(hero.getX(), hero.getY(), hero.getClasse().getMoves());
+            if(token === 0) {
+                token = 1;
+                _activeChar = chars[token];
+                //_activeChar.playOrReset();
+            } else {
+                token = 0;
+                _activeChar = chars[token];
+                //_activeChar.playOrReset();
+            }
+            this.update(_activeChar.getX(), _activeChar.getY(), _activeChar.getClasse().getMoves());
+            drawActiveInfo(_activeChar);
         }
     }
 
