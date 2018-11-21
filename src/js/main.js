@@ -347,6 +347,7 @@ class CrossHair {
         this.kRight = false;
         this.kMove = false;
         this.kReset = false;
+        this.kDone = false;
     }
 
     _right() {
@@ -409,12 +410,16 @@ class CrossHair {
             char.setX(this.x);
             char.setY(this.y);
             char.playOrReset();
+            this.range = 0;
+            this.kDone = true;
         }
     }
 
     resetPos() {
-        this.x = this.initX;
-        this.y = this.initY;
-        this.range = this.rangeMax;
+        if(!this.kDone){
+            this.x = this.initX;
+            this.y = this.initY;
+            this.range = this.rangeMax;
+        }
     }
 }
