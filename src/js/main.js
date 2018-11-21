@@ -6,8 +6,11 @@ let mapCanva, mapCtx;
 let infosCanva, infosCtx;
 const step = 80;
 let crosshair;
+let hero, clerk;
+let chars;
 let _activeChar;
 let iLeft, iRight, iUp, iDown;
+let ivLeft, ivRight, ivUp, ivDown;
 
 const map = [
     [1, 1, 1, 1, 1, 2, 2, 1, 1, 1],
@@ -42,20 +45,31 @@ window.onload = function () {
     infosCanva = document.querySelector("#charInfo");
     infosCtx = infosCanva.getContext("2d");
 
-    iLeft = new Image();
-    iRight = new Image();
-    iUp = new Image();
-    iDown = new Image();
+    // moche mais charge hero
+    iLeft = iRight = iUp = iDown = new Image();
     iLeft.src = "../assets/left.png";
     iRight.src = "../assets/right.png";
     iUp.src = "../assets/up.png";
     iDown.src = "../assets/down.png";
 
-    crosshair = new CrossHair(0, 0, 4);
+    //chargement 2e perso
+    ivLeft = ivRight = ivUp = ivDown = new Image();
+    ivLeft.src = "../assets/vieuxLeft.png";
+    ivRight.src = "../assets/vieuxRight.png";
+    ivUp.src = "../assets/vieuxUp.png";
+    ivDown.src = "../assets/vieuxDown.png";
+
+    let  classClerk = new Classe("Clerk", 10, 16, 3, 9, new Weapon("Mace", 13), new Armor("Holy robe", 5));
+    clerk = new Character("Old man", classClerk, [ivLeft, ivRight, ivUp, ivDown], 3, 3);
 
     let classWarrior = new Classe("Warrior", 14, 12, 4, 7, new Weapon("Sword", 10), new Armor("Buckle", 6));
-    let hero = new Character("Adol", classWarrior);
-    _activeChar = hero;
+    hero = new Character("Adol", classWarrior, [iLeft, iRight, iUp, iDown], 0, 0);
+
+    chars = [hero, clerk];
+
+    _activeChar = clerk;
+
+    crosshair = new CrossHair(_activeChar.getX(), _activeChar.getY(), _activeChar.getClasse().getMoves());
 
     drawActiveInfo(_activeChar);
     fpsInterval = 1000 / 15;
@@ -120,18 +134,21 @@ function drawActiveChar() {
             crosshair.resetPos();
         }
 
-        if(_activeChar.orientation === "LEFT") {
-            mapCtx.drawImage(iLeft, _activeChar.getX()*80, _activeChar.getY()*80);
+        mapCtx.drawImage(hero.getImgs()[0], hero.getX()*80, hero.getY()*80);
+        mapCtx.drawImage(clerk.getImgs()[0], clerk.getX()*80, clerk.getY()*80);
+
+        /*if(_activeChar.orientation === "LEFT") {
+            mapCtx.drawImage(_activeChar.getImgs()[0], _activeChar.getX()*80, _activeChar.getY()*80);
         }
         if(_activeChar.orientation === "RIGHT") {
-            mapCtx.drawImage(iRight, _activeChar.getX()*80, _activeChar.getY()*80);
+            mapCtx.drawImage(_activeChar.getImgs()[1], _activeChar.getX()*80, _activeChar.getY()*80);
         }
         if(_activeChar.orientation === "UP") {
-            mapCtx.drawImage(iUp, _activeChar.getX()*80, _activeChar.getY()*80);
+            mapCtx.drawImage(_activeChar.getImgs()[2], _activeChar.getX()*80, _activeChar.getY()*80);
         }
         if(_activeChar.orientation === "DOWN") {
-            mapCtx.drawImage(iDown, _activeChar.getX()*80, _activeChar.getY()*80);
-        }
+            mapCtx.drawImage(_activeChar.getImgs()[3], _activeChar.getX()*80, _activeChar.getY()*80);
+        }*/
         mapCtx.strokeRect(crosshair.x * 80, crosshair.y *80, step, step);
         mapCtx.restore();
 
@@ -139,7 +156,6 @@ function drawActiveChar() {
 }
 
 document.onkeydown = function (event) {
-    console.log(event);
     if(event.key === "ArrowUp") {
         crosshair.kUp = true;
     }
@@ -182,10 +198,12 @@ document.onkeyup = function (event) {
 };
 
 class Character {
-    constructor(name, c) {
+    constructor(name, c, imgs, iX, iY) {
         this.name = name;
         this.classe = c;
-        this.x = this.y = 0;
+        this.images = imgs;
+        this.x = iX;
+        this.y = iY;
         this.orientation = "DOWN";
         this.played = false;
     }
@@ -214,11 +232,15 @@ class Character {
         this.y = nY;
     }
 
+    getImgs() {
+        return this.images;
+    }
+
     playOrReset() {
         this.played = !this.played;
     }
 
-    cLeft() {
+    /*cLeft() {
         if(this.x > 0) {
             if(charPos[this.y][this.x-1] !== -1) {
                 this.x--;
@@ -260,7 +282,7 @@ class Character {
         } else {
             this.y = 9;
         }
-    }
+    }*/
 }
 
 class Classe {
@@ -401,6 +423,7 @@ class CrossHair {
         this.x = xx;
         this.y = yy;
         this.rangeMax = this.range = moves;
+        this.kDone = false;
     }
 
     moveActive(char) {
@@ -412,6 +435,7 @@ class CrossHair {
             char.playOrReset();
             this.range = 0;
             this.kDone = true;
+            _activeChar = clerk;
         }
     }
 
