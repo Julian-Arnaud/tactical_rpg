@@ -336,6 +336,8 @@ class Armor {
 
 class CrossHair {
     constructor(aCharX, aCharY, moves) {
+        this.initX = aCharX;
+        this.initY = aCharY;
         this.x = aCharX;
         this.y = aCharY;
         this.rangeMax = this.range = moves;
@@ -411,6 +413,8 @@ class CrossHair {
     }
 
     resetPos() {
+        this.x = this.initX;
+        this.y = this.initY;
         this.range = this.rangeMax;
     }
 }
