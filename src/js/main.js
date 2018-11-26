@@ -115,17 +115,21 @@ function drawActiveChar() {
         mapCtx.clearRect(0, 0, 800, 800);
         if(crosshair.kLeft === true) {
             crosshair._left();
+            console.log(crosshair);
             //_activeChar.cLeft();
         }
         if(crosshair.kRight === true) {
             crosshair._right();
+            console.log(crosshair);
             //_activeChar.cRight();
         }
         if(crosshair.kUp === true) {
+            console.log(crosshair);
             crosshair._up();
             //_activeChar.cUp();
         }
         if(crosshair.kDown === true) {
+            console.log(crosshair);
             crosshair._down();
             //_activeChar.cDown();
         }
@@ -362,74 +366,114 @@ class CrossHair {
         this.kReset = false;
         this.kDone = false;
 
-        this.actionStack = [];
+        this.actionStack = [""];
     }
 
     _right() {
-        if(this.range > 0) {
-            if(this.peek() === "LEFT") {
-                this.pop();
-                this.range++;
-                this.push("RIGHT");
-            }
-            if (this.x < 9) {
-                this.x++;
-                this.range--;
-            }
-            else {
+        if(this.range >= 0 && this.range <= this.rangeMax) {
+            if(this.x < 9) {
+                if(this.peek() === "LEFT") {
+                    this.pop();
+                    if(this.range <= this.rangeMax) {
+                        this.range++;
+                    } else {
+                        this.range = this.rangeMax;
+                    }
+                    this.x++;
+                } else {
+                    this.x++;
+                    if(this.range > 0) {
+                        this.range--;
+                    } else {
+                        this.range = 0;
+                    }
+                    this.push("RIGHT");
+                }
+            } else {
                 this.x = 9;
             }
         }
+        console.log(this.actionStack);
     }
 
     _left() {
-        if(this.range > 0) {
-            if(this.peek() === "RIGHT") {
-                this.pop();
-                this.range++;
-                this.push("LEFT");
-            }
-            if (this.x > 0) {
-                this.x--;
-                this.range--;
-            }
-            else {
-                this.x = 0;
+        if(this.range >= 0 && this.range <= this.rangeMax) {
+            if(this.x > 0) {
+                if(this.peek() === "RIGHT") {
+                    this.pop();
+                    if(this.range <= this.rangeMax) {
+                        this.range++;
+                    } else {
+                        this.range = this.rangeMax;
+                    }
+                    this.x--;
+                } else {
+                    this.x--;
+                    if(this.range > 0) {
+                        this.range--;
+                    } else {
+                        this.range = 0;
+                    }
+                    this.push("LEFT");
+                }
+            } else {
+                this.x = 0
             }
         }
+        console.log(this.actionStack);
     }
     _up() {
-        if(this.range > 0) {
-            if(this.peek() === "DOWN") {
-                this.pop();
-                this.range++;
-                this.push("UP");
-            }
-            if (this.y > 0) {
-                this.y--;
-                this.range--;
-            }
-            else {
+        if(this.range >= 0 && this.range <= this.rangeMax) {
+            if(this.y > 0) {
+                if(this.peek() === "DOWN") {
+                    this.pop();
+                    if(this.range <= this.rangeMax) {
+                        this.range++;
+                    } else {
+                        this.range = this.rangeMax;
+                    }
+                    this.y--;
+                } else {
+                    this.y--;
+                    if(this.range > 0) {
+                        this.range--;
+                    } else {
+                        this.range = 0;
+                    }
+                    this.push("UP");
+                }
+            } else {
                 this.y = 0;
             }
         }
+        console.log(this.actionStack);
     }
 
     _down() {
-        if(this.range > 0) {
-            if(this.peek() === "UP") {
-                this.pop();
-                this.range++;
-                this.push("DOWN");
-            }
-            if (this.y < 9) {
-                this.y++;
-                this.range--;
-            }
-            else {
+        if(this.range >= 0 && this.range <= this.rangeMax) {
+            if(this.y < 9){
+                if(this.peek() === "UP") {
+                    this.pop();
+                    if(this.range <= this.rangeMax) {
+                        this.range++;
+                    } else {
+                        this.range = this.rangeMax;
+                    }
+                    this.y++;
+                } else {
+                    this.y++;
+                    if(this.range > 0) {
+                        this.range--;
+                    } else {
+                        this.range = 0;
+                    }
+                    this.push("DOWN");
+                }
+            } else {
                 this.y = 9;
             }
         }
+        console.log(this.actionStack);
     }
 
     update(xx, yy, moves) {
@@ -437,7 +481,8 @@ class CrossHair {
         this.initY = yy;
         this.x = xx;
         this.y = yy;
-        this.rangeMax = this.range = moves;
+        this.rangeMax = moves;
+        this.range = moves;
         this.kUp = false;
         this.kDown = false;
         this.kLeft = false;
@@ -445,7 +490,7 @@ class CrossHair {
         this.kMove = false;
         this.kReset = false;
         this.kDone = false;
-        this.actionStack = [];
+        this.actionStack = [""];
     }
 
     moveActive(char) {
@@ -488,6 +533,16 @@ class CrossHair {
     }
 
     peek() {
-        return this.actionStack.peek();
+        if(this.actionStack.length === 0) {
+            return "";
+        } else {
+            const tmp = this.actionStack.pop();
+            this.actionStack.push(tmp);
+            return tmp;
+        }
+    }
+
+    empty() {
+        return this.actionStack.empty();
     }
 }
