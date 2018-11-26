@@ -376,18 +376,18 @@ class CrossHair {
                     this.pop();
                     if(this.range <= this.rangeMax) {
                         this.range++;
+                        this.x++;
                     } else {
                         this.range = this.rangeMax;
                     }
-                    this.x++;
                 } else {
-                    this.x++;
                     if(this.range > 0) {
                         this.range--;
+                        this.x++;
+                        this.push("RIGHT");
                     } else {
                         this.range = 0;
                     }
-                    this.push("RIGHT");
                 }
             } else {
                 this.x = 9;
@@ -403,18 +403,18 @@ class CrossHair {
                     this.pop();
                     if(this.range <= this.rangeMax) {
                         this.range++;
+                        this.x--;
                     } else {
                         this.range = this.rangeMax;
                     }
-                    this.x--;
                 } else {
-                    this.x--;
                     if(this.range > 0) {
                         this.range--;
+                        this.x--;
+                        this.push("LEFT");
                     } else {
                         this.range = 0;
                     }
-                    this.push("LEFT");
                 }
             } else {
                 this.x = 0
@@ -429,18 +429,18 @@ class CrossHair {
                     this.pop();
                     if(this.range <= this.rangeMax) {
                         this.range++;
+                        this.y--;
                     } else {
                         this.range = this.rangeMax;
                     }
-                    this.y--;
                 } else {
-                    this.y--;
                     if(this.range > 0) {
                         this.range--;
+                        this.y--;
+                        this.push("UP");
                     } else {
                         this.range = 0;
                     }
-                    this.push("UP");
                 }
             } else {
                 this.y = 0;
@@ -456,18 +456,18 @@ class CrossHair {
                     this.pop();
                     if(this.range <= this.rangeMax) {
                         this.range++;
+                        this.y++;
                     } else {
                         this.range = this.rangeMax;
                     }
-                    this.y++;
                 } else {
-                    this.y++;
                     if(this.range > 0) {
+                        this.y++;
                         this.range--;
+                        this.push("DOWN");
                     } else {
                         this.range = 0;
                     }
-                    this.push("DOWN");
                 }
             } else {
                 this.y = 9;
