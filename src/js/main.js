@@ -361,10 +361,17 @@ class CrossHair {
         this.kMove = false;
         this.kReset = false;
         this.kDone = false;
+
+        this.actionStack = [];
     }
 
     _right() {
         if(this.range > 0) {
+            if(this.peek() === "LEFT") {
+                this.pop();
+                this.range++;
+                this.push("RIGHT");
+            }
             if (this.x < 9) {
                 this.x++;
                 this.range--;
@@ -377,6 +384,11 @@ class CrossHair {
 
     _left() {
         if(this.range > 0) {
+            if(this.peek() === "RIGHT") {
+                this.pop();
+                this.range++;
+                this.push("LEFT");
+            }
             if (this.x > 0) {
                 this.x--;
                 this.range--;
@@ -388,6 +400,11 @@ class CrossHair {
     }
     _up() {
         if(this.range > 0) {
+            if(this.peek() === "DOWN") {
+                this.pop();
+                this.range++;
+                this.push("UP");
+            }
             if (this.y > 0) {
                 this.y--;
                 this.range--;
@@ -400,6 +417,11 @@ class CrossHair {
 
     _down() {
         if(this.range > 0) {
+            if(this.peek() === "UP") {
+                this.pop();
+                this.range++;
+                this.push("DOWN");
+            }
             if (this.y < 9) {
                 this.y++;
                 this.range--;
@@ -423,6 +445,7 @@ class CrossHair {
         this.kMove = false;
         this.kReset = false;
         this.kDone = false;
+        this.actionStack = [];
     }
 
     moveActive(char) {
@@ -454,5 +477,17 @@ class CrossHair {
             this.y = this.initY;
             this.range = this.rangeMax;
         }
+    }
+
+    push(str) {
+        this.actionStack.push(str);
+    }
+
+    pop() {
+        this.actionStack.pop();
+    }
+
+    peek() {
+        return this.actionStack.peek();
     }
 }
