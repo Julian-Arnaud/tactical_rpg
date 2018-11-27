@@ -6,7 +6,7 @@ let mapCanva, mapCtx;
 let infosCanva, infosCtx;
 const step = 80;
 let crosshair;
-let hero, clerk;
+let hero, clerk, foe;
 let chars;
 let _activeChar;
 let token;
@@ -30,7 +30,7 @@ let charPos = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0,-1,-1, 0],
     [0, 0, 0, 0, 0, 0,-1,-1, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0,-1,-1, 0],
+    [0, 0, 0, 0, 0, -3, 0,-1,-1, 0],
     [0, 0, 0, 0, 0, 0, 0,-1, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0,-1,-1, 0, 0, 0, 0, 0],
@@ -59,6 +59,8 @@ window.onload = function () {
     ivRight.src = "../assets/vieuxRight.png";
     ivUp.src = "../assets/vieuxUp.png";
     ivDown.src = "../assets/vieuxDown.png";
+
+    foe = new Foe("Goblin", 100, 6, 4, 5, 3);
 
     let  classClerk = new Classe("Clerk", 10, 16, 3, 9, new Weapon("Mace", 13), new Armor("Holy robe", 5));
     clerk = new Character("Old man", classClerk, [ivLeft, ivRight, ivUp, ivDown], 3, 3);
@@ -140,6 +142,9 @@ function drawActiveChar() {
         mapCtx.drawImage(hero.getImgs()[0], hero.getX()*80, hero.getY()*80);
         mapCtx.drawImage(clerk.getImgs()[0], clerk.getX()*80, clerk.getY()*80);
 
+        //draw static foe
+        mapCtx.fillRect(400, 240, 80, 80);
+
         mapCtx.strokeRect(crosshair.x * 80, crosshair.y *80, step, step);
         mapCtx.restore();
 
@@ -188,6 +193,56 @@ document.onkeyup = function (event) {
     }
 };
 
+class Foe {
+    constructor(name, lif, str, cons, pX, pY) {
+        this.name = name;
+        this.lifeMax = lif;
+        this.life = lif;
+        this.strength = str;
+        this.constitution = cons;
+        this.alive = true;
+        this.fX = pX;
+        this.fY = pY;
+    }
+
+    getFoeX() {
+        return this.fX;
+    }
+
+    getFoeY() {
+        return this.fY;
+    }
+
+    getFoeStatus() {
+        return this.alive;
+    }
+
+    getFoeName() {
+        return this.name;
+    }
+
+    getFoeLife() {
+        return this.life;
+    }
+
+    getFoeStrength() {
+        return this.strength;
+    }
+
+    getFoeConstitution() {
+        return this.constitution;
+    }
+
+    takeDamages(dgts) {
+        if(this.life - dgts < 0) {
+            this.life = 0;
+            this.alive = false;
+        } else {
+            this.life -= dgts;
+        }
+    }
+}
+
 class Character {
     constructor(name, c, imgs, iX, iY) {
         this.name = name;
@@ -230,47 +285,6 @@ class Character {
     playOrReset() {
         this.played = !this.played;
     }
-
-    /*cLeft() {
-        if(this.x > 0) {
-            if(charPos[this.y][this.x-1] !== -1) {
-                this.x--;
-                this.orientation = "LEFT";
-            }
-        } else {
-            this.x = 0;
-        }
-    }
-    cRight() {
-        if(this.x < 9) {
-            if(charPos[this.y][this.x+1] !== -1) {
-                this.x++;
-                this.orientation = "RIGHT";
-            }
-        } else {
-            this.x = 9;
-        }
-    }
-    cUp() {
-        if(this.y > 0) {
-            if(charPos[this.y-1][this.x] !== -1) {
-                this.y--;
-                this.orientation = "UP";
-            }
-        } else {
-            this.y = 0;
-        }
-    }
-    cDown() {
-        if(this.y < 9) {
-            if(charPos[this.y+1][this.x] !== -1) {
-                this.y++;
-                this.orientation = "DOWN";
-            }
-        } else {
-            this.y = 9;
-        }
-    }*/
 }
 
 class Classe {
@@ -430,6 +444,7 @@ class CrossHair {
             char.setY(this.y);
             //char.playOrReset();
             this.range = 0;
+            attackIfPossible();
             this.kDone = true;
             if(token === 0) {
                 token = 1;
@@ -450,6 +465,21 @@ class CrossHair {
             this.x = this.initX;
             this.y = this.initY;
             this.range = this.rangeMax;
+        }
+    }
+
+    attackIfPossible() {
+        var yes = false;
+        if(this.x === 0 && this.y === 0) {
+
+        } else if(this.x === 0 && this.y === 9) {
+
+        } else if(this.x === 9 && this.y === 9) {
+
+        } else if(this.x === 9 && this.y === 9) {
+
+        } else {
+            
         }
     }
 }
