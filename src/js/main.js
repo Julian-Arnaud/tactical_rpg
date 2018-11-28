@@ -470,16 +470,8 @@ class CrossHair {
 
     attackIfPossible() {
         var yes = false;
-        if(this.x === 0 && this.y === 0) {
-
-        } else if(this.x === 0 && this.y === 9) {
-
-        } else if(this.x === 9 && this.y === 9) {
-
-        } else if(this.x === 9 && this.y === 9) {
-
-        } else {
-            
-        }
+        if(charPos[this.y][this.x + 1] === -3 || charPos[this.y][this.x - 1] === -3
+            || charPos[this.y + 1][this.x] === -3 || charPos[this.y - 1][this.x] === -3) yes = true;
+        return yes;
     }
 }
