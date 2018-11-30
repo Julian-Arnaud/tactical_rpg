@@ -115,28 +115,31 @@ function drawActiveChar() {
 
         mapCtx.save();
         mapCtx.clearRect(0, 0, 800, 800);
-        if(crosshair.kLeft === true) {
+        if(crosshair.kLeft) {
             crosshair._left();
             //_activeChar.cLeft();
         }
-        if(crosshair.kRight === true) {
+        if(crosshair.kRight) {
             crosshair._right();
             //_activeChar.cRight();
         }
-        if(crosshair.kUp === true) {
+        if(crosshair.kUp) {
             crosshair._up();
             //_activeChar.cUp();
         }
-        if(crosshair.kDown === true) {
+        if(crosshair.kDown) {
             crosshair._down();
             //_activeChar.cDown();
         }
 
-        if(crosshair.kMove === true) {
+        if(crosshair.kMove) {
             crosshair.moveActive(_activeChar);
         }
-        if(crosshair.kReset === true) {
+        if(crosshair.kReset) {
             crosshair.resetPos();
+        }
+        if(crosshair.kSkip) {
+            crosshair.skip();
         }
 
         mapCtx.drawImage(hero.getImgs()[0], hero.getX()*80, hero.getY()*80);
@@ -170,6 +173,9 @@ document.onkeydown = function (event) {
     if(event.key === "d") {
         crosshair.kReset = true;
     }
+    if(event.key === "s") {
+        crosshair.kSkip = true;
+    }
 };
 
 document.onkeyup = function (event) {
@@ -190,6 +196,9 @@ document.onkeyup = function (event) {
     }
     if(event.key === "d") {
         crosshair.kReset = false;
+    }
+    if(event.key === "s") {
+        crosshair.kSkip = false;
     }
 };
 
@@ -251,7 +260,7 @@ class Character {
         this.x = iX;
         this.y = iY;
         this.orientation = "DOWN";
-        this.played = false;
+        //this.played = false;
     }
 
     getClasse() {
@@ -372,6 +381,7 @@ class CrossHair {
         this.kMove = false;
         this.kReset = false;
         this.kDone = false;
+        this.kSkip = false;
     }
 
     _right() {
@@ -437,14 +447,14 @@ class CrossHair {
     }
 
     moveActive(char) {
-        if(charPos[this.y][this.x] === 0 && !char.played) {
+        if(charPos[this.y][this.x] === 0 /*&& !char.played*/) {
             charPos[char.getY()][char.getX()] = 0;
             charPos[this.y][this.x] = -2;
             char.setX(this.x);
             char.setY(this.y);
             //char.playOrReset();
             this.range = 0;
-            attackIfPossible();
+            //attackIfPossible();
             this.kDone = true;
             if(token === 0) {
                 token = 1;
@@ -453,7 +463,7 @@ class CrossHair {
             } else {
                 token = 0;
                 _activeChar = chars[token];
-                //_activeChar.playOrReset();
+               // _activeChar.playOrReset();
             }
             this.update(_activeChar.getX(), _activeChar.getY(), _activeChar.getClasse().getMoves());
             drawActiveInfo(_activeChar);
@@ -466,6 +476,21 @@ class CrossHair {
             this.y = this.initY;
             this.range = this.rangeMax;
         }
+    }
+
+    skip() {
+        this.kDone = true;
+        if(token === 0) {
+            token = 1;
+            _activeChar = chars[token];
+            //_activeChar.playOrReset();
+        } else {
+            token = 0;
+            _activeChar = chars[token];
+            // _activeChar.playOrReset();
+        }
+        this.update(_activeChar.getX(), _activeChar.getY(), _activeChar.getClasse().getMoves());
+        drawActiveInfo(_activeChar);
     }
 
     attackIfPossible() {
