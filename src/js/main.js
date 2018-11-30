@@ -447,26 +447,12 @@ class CrossHair {
     }
 
     moveActive(char) {
-        if(charPos[this.y][this.x] === 0 /*&& !char.played*/) {
+        if(charPos[this.y][this.x] === 0) {
             charPos[char.getY()][char.getX()] = 0;
             charPos[this.y][this.x] = -2;
             char.setX(this.x);
             char.setY(this.y);
-            //char.playOrReset();
             this.range = 0;
-            //attackIfPossible();
-            this.kDone = true;
-            if(token === 0) {
-                token = 1;
-                _activeChar = chars[token];
-                //_activeChar.playOrReset();
-            } else {
-                token = 0;
-                _activeChar = chars[token];
-               // _activeChar.playOrReset();
-            }
-            this.update(_activeChar.getX(), _activeChar.getY(), _activeChar.getClasse().getMoves());
-            drawActiveInfo(_activeChar);
         }
     }
 
@@ -493,10 +479,4 @@ class CrossHair {
         drawActiveInfo(_activeChar);
     }
 
-    attackIfPossible() {
-        var yes = false;
-        if(charPos[this.y][this.x + 1] === -3 || charPos[this.y][this.x - 1] === -3
-            || charPos[this.y + 1][this.x] === -3 || charPos[this.y - 1][this.x] === -3) yes = true;
-        return yes;
-    }
 }
