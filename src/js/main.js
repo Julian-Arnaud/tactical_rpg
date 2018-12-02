@@ -382,6 +382,7 @@ class CrossHair {
         this.kReset = false;
         this.kDone = false;
         this.kSkip = false;
+        this.kFight = false;
     }
 
     _right() {
@@ -444,6 +445,8 @@ class CrossHair {
         this.kMove = false;
         this.kReset = false;
         this.kDone = false;
+        this.kSkip = false;
+        this.kFight = false;
     }
 
     moveActive(char) {
