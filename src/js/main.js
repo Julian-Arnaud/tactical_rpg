@@ -273,6 +273,7 @@ class Foe {
         if(this.life - dgts < 0) {
             this.life = 0;
             this.alive = false;
+            charPos[this.fY][this.fX] = 0;
         } else {
             this.life -= dgts;
         }
@@ -418,7 +419,7 @@ class CrossHair {
     }
 
     _right() {
-        if(this.range > 0) {
+        if(this.range > 0 && charPos[this.y][this.x+1] === 0) {
             if (this.x < 9) {
                 this.x++;
                 this.range--;
@@ -430,7 +431,7 @@ class CrossHair {
     }
 
     _left() {
-        if(this.range > 0) {
+        if(this.range > 0 && charPos[this.y][this.x-1] === 0) {
             if (this.x > 0) {
                 this.x--;
                 this.range--;
@@ -441,7 +442,7 @@ class CrossHair {
         }
     }
     _up() {
-        if(this.range > 0) {
+        if(this.range > 0 && charPos[this.y-1][this.x] === 0) {
             if (this.y > 0) {
                 this.y--;
                 this.range--;
@@ -453,7 +454,7 @@ class CrossHair {
     }
 
     _down() {
-        if(this.range > 0) {
+        if(this.range > 0 && charPos[this.y+1][this.x] === 0) {
             if (this.y < 9) {
                 this.y++;
                 this.range--;
