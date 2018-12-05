@@ -7,7 +7,7 @@ let infosCanva, infosCtx;
 const step = 80;
 let crosshair;
 let hero, clerk, foe;
-let chars;
+let chars, foes; // arrays of heros & foes
 let _activeChar;
 let token;
 let iLeft, iRight, iUp, iDown;
@@ -61,11 +61,12 @@ window.onload = function () {
     ivDown.src = "../assets/vieuxDown.png";
 
     foe = new Foe("Goblin", 100, 6, 4, 5, 3);
+    foes = [foe];
 
-    let  classClerk = new Classe("Clerk", 10, 16, 3, 9, new Weapon("Mace", 13), new Armor("Holy robe", 5));
+    let  classClerk = new Classe("Clerk", 10, 16, 3, 9, new Weapon("Mace", 13, 1), new Armor("Holy robe", 5));
     clerk = new Character("Old man", classClerk, [ivLeft, ivRight, ivUp, ivDown], 3, 3);
 
-    let classWarrior = new Classe("Warrior", 14, 12, 4, 7, new Weapon("Sword", 10), new Armor("Buckle", 6));
+    let classWarrior = new Classe("Warrior", 14, 12, 4, 7, new Weapon("Sword", 10, 1), new Armor("Buckle", 6));
     hero = new Character("Adol", classWarrior, [iLeft, iRight, iUp, iDown], 0, 0);
 
     token = 0;
@@ -101,6 +102,10 @@ function drawActiveInfo(aChar) {
     infosCtx.fillText(aChar.getClasse().getWeapon().getWValue(), 159, 240);
     infosCtx.fillText(aChar.getClasse().getArmor().getAName(), 55, 277);
     infosCtx.fillText(aChar.getClasse().getArmor().getAValue(), 159, 277);
+    // some info
+    infosCtx.fillText("_> Arrows to move, (D) to cancel", 30, 350);
+    infosCtx.fillText("_>(F)ight or (S)kip to end turn", 30, 370);
+    infosCtx.fillText("_> (Q) to accept the move", 30, 390);
 
     infosCtx.restore();
 }
@@ -141,6 +146,9 @@ function drawActiveChar() {
         if(crosshair.kSkip) {
             crosshair.skip();
         }
+        if(crosshair.kFight) {
+            crosshair.fight();
+        }
 
         mapCtx.drawImage(hero.getImgs()[0], hero.getX()*80, hero.getY()*80);
         mapCtx.drawImage(clerk.getImgs()[0], clerk.getX()*80, clerk.getY()*80);
@@ -176,6 +184,9 @@ document.onkeydown = function (event) {
     if(event.key === "s") {
         crosshair.kSkip = true;
     }
+    if(event.key === "f") {
+        crosshair.kFight = true;
+    }
 };
 
 document.onkeyup = function (event) {
@@ -199,6 +210,9 @@ document.onkeyup = function (event) {
     }
     if(event.key === "s") {
         crosshair.kSkip = false;
+    }
+    if(event.key === "f") {
+        crosshair.kFight = false;
     }
 };
 
@@ -338,9 +352,10 @@ class Classe {
 }
 
 class Weapon {
-    constructor(n, val) {
+    constructor(n, val, rng) {
         this.wName = n;
         this.wValue = val;
+        this.wRange = rng;
     }
 
     getWName() {
@@ -349,6 +364,10 @@ class Weapon {
 
     getWValue() {
         return this.wValue;
+    }
+
+    getWRange() {
+        return this.wRange;
     }
 }
 
@@ -480,6 +499,21 @@ class CrossHair {
         }
         this.update(_activeChar.getX(), _activeChar.getY(), _activeChar.getClasse().getMoves());
         drawActiveInfo(_activeChar);
+    }
+
+    fight() {
+        console.log("fight");
+        for(let j = 0; j < foes.length; ++j) {
+            if (foes[j].getFoeStatus() && _activeChar.getClasse().getWeapon().getWRange() === this.calcDist(_activeChar, foes[j])) {
+                foes[j].takeDamages((_activeChar.getClasse().getWeapon().getWValue() * (1 + _activeChar.getClasse().getStrength()/100) - foes[j].getFoeConstitution()));
+                console.log(foes[j].getFoeLife());
+            }
+            this.skip();
+        }
+    }
+
+    calcDist(char, foe) {
+        return Math.sqrt(Math.pow(char.getX() - foe.getFoeX(), 2) + Math.pow(char.getY() - foe.getFoeY(), 2));
     }
 
 }
