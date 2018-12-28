@@ -13,6 +13,7 @@ let _activeChar;
 let token;
 let iLeft, iRight, iUp, iDown;
 let ivLeft, ivRight, ivUp, ivDown;
+let wolf, goblin, boss;
 
 const map = [
     [1, 1, 1, 1, 1, 2, 2, 1, 1, 1],
@@ -61,9 +62,19 @@ window.onload = function () {
     ivUp.src = "../assets/vieuxUp.png";
     ivDown.src = "../assets/vieuxDown.png";
 
-    foe1 = new Foe("Goblin", 100, 6, 4, 5, 3);
-    foe2 = new Foe("Big Goblin", 150, 14, 10, 8, 8);
-    foe3 = new Foe("Wolf", 70, 13, 8, 2, 8);
+    //wolf, goblin, boss
+    wolf = new Image();
+    wolf.src = "../assets/wolf.png";
+
+    goblin = new Image();
+    goblin.src = "../assets/goblin.png";
+
+    boss = new Image();
+    boss.src = "../assets/boss.png";
+
+    foe1 = new Foe("Goblin", goblin, 100, 6, 4, 5, 3);
+    foe2 = new Foe("Big Goblin", boss, 150, 14, 10, 8, 8);
+    foe3 = new Foe("Wolf", wolf, 70, 13, 8, 2, 8);
     foes = [foe1, foe2, foe3];
 
     let  classClerk = new Classe("Clerk", 10, 16, 3, 9, new Weapon("Mace", 13, 1), new Armor("Holy robe", 5));
@@ -169,7 +180,7 @@ function drawFoes() {
     mapCtx.save();
     mapCtx.fillStyle = "#FFFF00";
     for(let i = 0; i < foes.length; ++i) {
-        if(foes[i].getFoeStatus()) mapCtx.fillRect(foes[i].getFoeX() * 80, foes[i].getFoeY() * 80, 80, 80);
+        if(foes[i].getFoeStatus()) mapCtx.drawImage(foes[i].getImg(), foes[i].getFoeX()*80, foes[i].getFoeY()*80);
     }
 
     mapCtx.restore();
@@ -230,8 +241,9 @@ document.onkeyup = function (event) {
 };
 
 class Foe {
-    constructor(name, lif, str, cons, pX, pY) {
+    constructor(name, img, lif, str, cons, pX, pY) {
         this.name = name;
+        this.img = img;
         this.lifeMax = lif;
         this.life = lif;
         this.strength = str;
@@ -239,6 +251,10 @@ class Foe {
         this.alive = true;
         this.fX = pX;
         this.fY = pY;
+    }
+
+    getImg() {
+        return this.img;
     }
 
     getFoeX() {
