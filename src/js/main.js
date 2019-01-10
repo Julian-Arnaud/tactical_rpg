@@ -11,6 +11,7 @@ let foe1, foe2, foe3, foe4;
 let chars, foes; // arrays of heros & foes
 let _activeChar;
 let token;
+let bgm;
 let iLeft, iRight, iUp, iDown;
 let ivLeft, ivRight, ivUp, ivDown;
 let wolf, goblin, boss;
@@ -42,6 +43,10 @@ let charPos = [
 ];
 
 window.onload = function () {
+    bgm = new Audio();
+    bgm.src = '../assets/Battle4.ogg';
+    bgm.play().then(value => console.log('ok'));
+
     mapCanva = document.querySelector("#map");
     mapCtx = mapCanva.getContext("2d");
 
