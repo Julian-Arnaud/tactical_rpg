@@ -183,7 +183,6 @@ function drawActiveChar() {
 
 function drawFoes() {
     mapCtx.save();
-    mapCtx.fillStyle = "#FFFF00";
     for(let i = 0; i < foes.length; ++i) {
         if(foes[i].getFoeStatus()) mapCtx.drawImage(foes[i].getImg(), foes[i].getFoeX()*80, foes[i].getFoeY()*80);
     }
